@@ -1,0 +1,219 @@
+/* Red			rgba(255,58,93,1) 	*/
+/* Blue 		rgba(0,215,255,1)		*/
+/* Yellow		rgba(238,213,18,1)	*/
+/* OffWhite	rgba(177,185,195,1)	*/
+/* Grey			rgba(101,101,121,1)	*/
+/* BG 			rgba(15,14,18,1)		*/
+body {	
+	background-color: rgba(15,14,18,1);
+	font-family: 'Abel';
+	font-size: 16px;
+	padding: 60px 0 0 60px; 
+}
+.app-headline {
+	color: #fff;
+	font-size: 32px;
+	line-height: 22px;
+	margin-bottom: 15px;
+}
+.app-smallcaps {
+	text-transform: uppercase;
+	font-size: 20px;
+	letter-spacing: 2px; 
+	color: rgba(177,185,195,1);
+}
+.app-subhead {
+	margin: 0;
+	color: #fff;
+	font-size: 14px; 
+}
+.app-label {
+	padding: 1px 3px;
+	border-radius: 2px;
+	background-color: rgba(101,101,121,1);
+	color: rgba(15,14,18,1);
+}
+.app-label.yellow {
+	background-color: rgba(238,213,18,1);
+}
+.app-attribution {
+	color: rgba(255,58,93,1);
+	letter-spacing: 2px;
+	text-transform: uppercase;
+}
+
+/* Pages Per Day */
+
+.app-ppd_wrapper {
+	width: 300px;
+	margin: 40px 0; 
+}
+.app-ppd_input {
+	width: 75px;
+	height: 65px;
+	font-family: 'Abel';
+	font-size: 60px;
+	line-height: 0;
+	color: #fff;
+	background-color: transparent;
+	outline: none;
+	border: 0;
+	border-bottom: 2px solid rgba(177,185,195,1);
+	text-align: center;
+	padding: 0; 
+}
+.app-ppd_input:focus { border-color: rgba(238,213,18,1); }
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+  -webkit-appearance: none; 
+  margin: 0; 
+}
+.app-ppd_label {
+	display: inline-block;
+	position: relative;
+	padding-bottom: 25px;
+	color: rgba(101,101,121,1);
+	font-size: 36px; 
+	vertical-align: middle;
+}
+.app-ppd_helper {
+	font-size: 14px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	color: rgba(101,101,121,1);
+	margin: 0;
+}
+
+/* Progress Chart - Table */
+
+.app-chart_wrapper {
+	width: 600px;
+	counter-reset: chapter;
+}
+.app-chart_table {
+	width: 100%;
+	border-collapse: initial !important;
+	border-radius: 3px 3px 0 0;
+	border-spacing: 0;
+	margin-bottom: 15px;
+}
+.app-chart_table th,
+.app-chart_table td {
+	padding: 4px;
+	width: 50px; 
+	height: 30px;
+	background-color: transparent;
+	color: #fff;
+	text-align: center;
+	vertical-align: middle;
+	font-size: 22px;
+	border-top: 3px solid rgba(0,215,255,1);
+	border-bottom: 3px solid rgba(0,215,255,1);
+	border-right: 3px solid rgba(0,215,255,1);
+}
+.app-chart_table td {
+	border-top: 0;
+	padding: 4px 4px 6px 4px;
+}
+.app-chart_table th.large { width: 100px; }
+.app-chart_table thead tr th:first-child {
+	border-left: 3px solid rgba(0,215,255,1);
+	border-radius: 2px 0 0 0; 
+}
+.app-chart_table td:first-child { border-left: 3px solid rgba(0,215,255,1); }
+.app-chart_table thead tr th:last-child {
+	border-radius: 0 2px 0 0;
+}
+.app-chart_table tbody tr:last-child td:first-child { border-radius: 0 0 0 2px; }
+.app-chart_table tbody tr:last-child td:last-child {
+	border-radius: 0 0 2px 0;
+}
+td.null { background: repeating-linear-gradient(
+  45deg,
+  rgba(101,101,121,0.5),
+  rgba(101,101,121,0.5) 2px,
+  rgba(15,14,18,1) 2px,
+  rgba(15,14,18,1) 6px
+); }
+td.error { background-color: rgba(255,58,93,1); }
+.app-chart_chapNum {
+	counter-increment: chapter;
+	display: inline-block;
+	width: 14px;
+	height: 14px;
+	font-size: 14px;
+	line-height: 14px;
+	color: rgba(15,14,18,1);
+	background-color: rgba(238,213,18,1);
+	text-align: center;
+	padding: 6px; 
+	border-radius: 100%; 
+}
+.app-chart_chapNum:before { content: counter(chapter); }
+
+.app_chart_field {
+	display: inline-block;
+	width: 36px;
+	background-color: transparent;
+	border: none;
+	line-height: 0;
+	color: #fff;
+	font-size: 24px;
+	border-bottom: 2px solid rgba(177,185,195,1);
+	text-align: center;
+	font-family: Abel;
+}
+.app_chart_field:focus {
+	outline: none;
+	border-color: rgba(238,213,18,1);
+}
+
+/* Progress Chart - Add/Remove Rows */
+
+.app-chart-button {
+	position: relative;
+	float: right;
+	display: inline-block;
+	height: 30px;
+	margin-left: 10px;
+	font-family: Abel;
+	font-size: 18px;
+	font-weight: 800;
+	line-height: 20px;
+	letter-spacing: 1px;
+	text-transform: uppercase;
+	border: 2px solid rgba(177,185,195,1);
+	background-color: rgba(15,14,18,1);
+	color: rgba(177,185,195,1);
+	border-radius: 0;
+	transform: translateY(0);
+	transition: background-color 140ms ease-out,
+							color 140ms ease-out,
+							transform 70ms ease-out;
+}
+.app-chart-button:focus,
+.app-chart-button:hover {
+	outline: none;
+	cursor: pointer;
+}
+.app-chart-button:active { transform: translateY(3px); }
+
+.app-chart-button.add {
+	border-color: rgba(238,213,18,1);
+	color: rgba(238,213,18,1);
+}
+.app-chart-button.add:focus,
+.app-chart-button.add:hover {
+	background-color: rgba(238,213,18,1);
+	color: rgba(15,14,18,1);
+}
+.app-chart-button.generate {
+	border-color: rgba(0,215,255,1);
+	color: rgba(0,215,255,1);
+}
+.app-chart-button.generate:focus,
+.app-chart-button.generate:hover {
+	background-color: rgba(0,215,255,1);
+	color: rgba(15,14,18,1);
+}
