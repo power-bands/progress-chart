@@ -19,7 +19,7 @@
 				<label class="app-ppd_label" for="ppd" title="Pages per Day">P/D</label> 
 				<p class="app-ppd_helper">Enter number of pages read per day</p>
 			</section>
-			<section class="app-chart_wrapper">
+			<section class="app-chart_wrapper cf">
 				<table class="app-chart_table">
 					<thead>
 						<tr>
@@ -42,13 +42,14 @@
 							<td class="null"></td>
 							<td class="null"></td>
 							<td class="null large"></td>
-							<td class="null large"></td>
+							<td class="null large">
+							</td>
 						</tr>
 						
 					</tbody>
 				</table>
-				<button class="app-chart-button generate" id="chartGenerate">Generate</button>
-				<button class="app-chart-button add" id="chartAdd">Add Row</button>
+				<a class="app-chart-button generate" id="chartGenerate" href="javascript:void(0);">Generate</a>
+				<a class="app-chart-button add" id="chartAdd" href="javascript:void(0);">Add Row</a>
 			</section>
 			<template id="chartRowTemplate">
 				<tr>
@@ -59,7 +60,9 @@
 					<td class="null"></td>
 					<td class="null"></td>
 					<td class="null large"></td>
-					<td class="null large"></td>
+					<td class="null large">
+						<a class="app-chart-remove" href="javascript:void(0);">-</a>
+					</td>
 				</tr>
 			</template>
 			<script type="text/javascript" src="script.js"></script>

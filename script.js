@@ -26,8 +26,14 @@ function calculateEndDate(pgs, ppd, end) {
 	};
 }
 
+chart.addEventListener('click', function(e) {
+	if (e.target.classList.contains('app-chart-remove')) {
+		e.target.parentNode.parentNode.remove();
+	}
+	return false;
+});
+
 add.addEventListener('click', function(e) {
 	var clone = document.importNode(chartRow.content.children[0], true);
-	console.log(clone);
 	chart.appendChild(clone);
 });

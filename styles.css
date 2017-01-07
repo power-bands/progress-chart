@@ -4,6 +4,28 @@
 /* OffWhite	rgba(177,185,195,1)	*/
 /* Grey			rgba(101,101,121,1)	*/
 /* BG 			rgba(15,14,18,1)		*/
+
+.cf:before,
+.cf:after {
+    content: " "; /* 1 */
+    display: table; /* 2 */
+}
+
+.cf:after {
+    clear: both;
+}
+
+/**
+ * For IE 6/7 only
+ * Include this rule to trigger hasLayout and contain floats.
+ */
+.cf {
+    *zoom: 1;
+}
+
+html { box-sizing: border-box; }
+*, *:before, *:after { box-sizing: inherit; }
+
 body {	
 	background-color: rgba(15,14,18,1);
 	font-family: 'Abel';
@@ -64,6 +86,7 @@ body {
 }
 .app-ppd_input:focus { border-color: rgba(238,213,18,1); }
 
+input[type=number] { -moz-appearance: textfield; } 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
   -webkit-appearance: none; 
@@ -89,9 +112,11 @@ input[type=number]::-webkit-outer-spin-button {
 
 .app-chart_wrapper {
 	width: 600px;
+	margin-bottom: 40px;
 	counter-reset: chapter;
 }
 .app-chart_table {
+	position: relative;
 	width: 100%;
 	border-collapse: initial !important;
 	border-radius: 3px 3px 0 0;
@@ -140,8 +165,8 @@ td.error { background-color: rgba(255,58,93,1); }
 .app-chart_chapNum {
 	counter-increment: chapter;
 	display: inline-block;
-	width: 14px;
-	height: 14px;
+	width: 26px;
+	height: 26px;
 	font-size: 14px;
 	line-height: 14px;
 	color: rgba(15,14,18,1);
@@ -171,16 +196,40 @@ td.error { background-color: rgba(255,58,93,1); }
 
 /* Progress Chart - Add/Remove Rows */
 
+.app-chart-remove {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	float: right;
+	margin-right: -45px;
+	font-size: 36px;
+	line-height: 22px;
+	border-radius: 100%;
+	border: 2px solid rgba(255,58,93,0.5);
+	color: rgba(255,58,93,0.5);
+	background-color: transparent;
+	text-align: center;
+	cursor: pointer;
+	transition: border-color 100ms ease-out,
+							color 100ms ease-out;
+	text-decoration: none;
+}
+.app-chart-remove:hover {
+	border-color: rgba(255,58,93,1);
+	color: rgba(255,58,93,1);
+}
+
 .app-chart-button {
 	position: relative;
 	float: right;
 	display: inline-block;
-	height: 30px;
+	height: 33px;
 	margin-left: 10px;
+	padding: 0 8px;
 	font-family: Abel;
 	font-size: 18px;
 	font-weight: 800;
-	line-height: 20px;
+	line-height: 29px;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	border: 2px solid rgba(177,185,195,1);
@@ -191,6 +240,7 @@ td.error { background-color: rgba(255,58,93,1); }
 	transition: background-color 140ms ease-out,
 							color 140ms ease-out,
 							transform 70ms ease-out;
+	text-decoration: none;
 }
 .app-chart-button:focus,
 .app-chart-button:hover {
