@@ -194,6 +194,11 @@ td.error { background-color: rgba(255,58,93,1); }
 	border-color: rgba(238,213,18,1);
 }
 
+.app-chart-projected {
+	color: rgba(15,14,18,1);
+	transition: color 140ms ease-out; 
+}
+
 /* Progress Chart - Add/Remove Rows */
 
 .app-chart-remove {
