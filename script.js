@@ -1,56 +1,102 @@
 (function() {
 
-// Add Leading zero to PPD
 var ppd = document.querySelector('.app-ppd_input'),
 		generate = document.querySelector('#chartGenerate'),
 		add = document.querySelector('#chartAdd'),
 		chart = document.querySelector('#chartRows'),
-		chartRow = document.querySelector('#chartRowTemplate');
+		error = document.querySelector('.app-chart-error'),
+		chartRow = document.querySelector('#chartRowTemplate'),
+		dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-var dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+ppd.addEventListener('change', function resetPPD(e) {
 
-ppd.addEventListener('change', function(e) {
+	e.target.classList.remove('error');
 	var ppdVal = e.target.value;
+
 	if (ppdVal < 10) {
 		e.target.value = ('0' + ppdVal).slice(-2);
 	}
+
 });
 
-chart.addEventListener('click', function(e) {
+chart.addEventListener('focusin', function removeErrorState(e) {
+	
+	if (e.target.tagName == 'INPUT') {
+		e.target.classList.remove('error');
+	}
+	return false;
+});
+
+chart.addEventListener('click', function removeRow(e) {
 	if (e.target.classList.contains('app-chart-remove')) {
 		e.target.parentNode.parentNode.remove();
 	}
 	return false;
 });
 
-add.addEventListener('click', function(e) {
+add.addEventListener('click', function addRow(e) {
 	var clone = document.importNode(chartRow.content.children[0], true);
 	chart.appendChild(clone);
 });
 
-generate.addEventListener('click', function(e) {
-	var projectedDOM = [].slice.call(document.querySelectorAll('.app-chart-projected'),0),
-			pagesInChapter = [].slice.call(document.querySelectorAll('.pagesInChapter'),0),
-			projectedLEN = projectedDOM.length,
-			rollingDate = new Date(),
-			pagesPerDay = ppd.value;
+generate.addEventListener('click', function generateChart(e) {
+
+	var projectedDOM 		= [].slice.call(document.querySelectorAll('.app-chart-projected'),0),
+			pagesInChapter 	= [].slice.call(document.querySelectorAll('.pagesInChapter'),0),
+			projectedLEN 		= projectedDOM.length,
+			rollingDate 		= new Date(),
+			pagesPerDay 		= ppd.value,
+			errorFields			= [],
+			errorInterval		= null;
+
+	if (pagesPerDay <= 0) {
+		errorInterval = showError('Provide Pages Read Per Day', [ppd], errorInterval);
+		
+		return false;
+	}
 
 	for (var i = 0; i < projectedLEN; i++) {
-		var projectedDate = calculateEndDate(pagesInChapter[i].value, pagesPerDay, rollingDate);
 
-		// projectedDOM[i].style.color = 'rgba(15,14,18,1)';
-		// projectedDOM[i].style.transitionDelay = (i * 140) + 'ms';
+		if (pagesInChapter[i].value.length == 0) {
+			errorFields.push(pagesInChapter[i]);
+			continue;
+		}
+
+		var projectedDate = calculateEndDate(pagesInChapter[i].value, pagesPerDay, rollingDate);
 		
 		projectedDOM[i].style.color = '#fff';
 		projectedDOM[i].classList.remove('null');
-		projectedDOM[i].innerText = projectedDate.date+'/'+projectedDate.month;
-
-		// setTimeout(function() { projectedDOM[i].style.color = '#fff'; }, 100);
+		projectedDOM[i].innerText = projectedDate.month + '/' + projectedDate.date;
 
 		rollingDate = projectedDate.d;
 	}
 
+	if (errorFields.length > 0) {
+		errorInterval = showError('Missing Chapter Page Count', errorFields, errorInterval);
+		return false;
+	}
+
 });
+
+// (str,Array<DOM,Interval) => FormattedDate 
+function showError(msg,fields,interval) {
+
+	error.innerText = msg;
+	error.classList.add('visible');
+
+	clearInterval(interval);
+
+	var errorInterval = setTimeout(function() {
+		error.classList.remove('visible');
+	}, 7000);
+
+	fields.map(function(i) {
+		i.classList.add('error');
+	});
+
+	return errorInterval;
+
+}
 
 // (int, int, Date) => FormattedDate 
 function calculateEndDate(pgs, ppd, end) {
