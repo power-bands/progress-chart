@@ -6,7 +6,8 @@ var ppd = document.querySelector('.app-ppd_input'),
 		chart = document.querySelector('#chartRows'),
 		error = document.querySelector('.app-chart-error'),
 		chartRow = document.querySelector('#chartRowTemplate'),
-		dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+		dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'],
+		errorInterval = null;
 
 ppd.addEventListener('change', function resetPPD(e) {
 
@@ -20,7 +21,6 @@ ppd.addEventListener('change', function resetPPD(e) {
 });
 
 chart.addEventListener('focusin', function removeErrorState(e) {
-	
 	if (e.target.tagName == 'INPUT') {
 		e.target.classList.remove('error');
 	}
@@ -34,6 +34,18 @@ chart.addEventListener('click', function removeRow(e) {
 	return false;
 });
 
+chart.addEventListener('change', function padChapterNumber(e) {
+	if (e.target.tagName == 'INPUT') {
+		var chapterPageCount = e.target.value;
+		if (chapterPageCount < 10) {
+			e.target.value = ('0' + chapterPageCount).slice(-2);
+		}
+	}
+	return false;
+});
+
+
+
 add.addEventListener('click', function addRow(e) {
 	var clone = document.importNode(chartRow.content.children[0], true);
 	chart.appendChild(clone);
@@ -46,8 +58,7 @@ generate.addEventListener('click', function generateChart(e) {
 			projectedLEN 		= projectedDOM.length,
 			rollingDate 		= new Date(),
 			pagesPerDay 		= ppd.value,
-			errorFields			= [],
-			errorInterval		= null;
+			errorFields			= [];
 
 	if (pagesPerDay <= 0) {
 		errorInterval = showError('Provide Pages Read Per Day', [ppd], errorInterval);
