@@ -134,9 +134,9 @@ input[type=number]::-webkit-outer-spin-button {
 	text-align: center;
 	vertical-align: middle;
 	font-size: 22px;
-	border-top: 3px solid rgba(0,215,255,1);
-	border-bottom: 3px solid rgba(0,215,255,1);
-	border-right: 3px solid rgba(0,215,255,1);
+	border-top: 2px solid rgba(0,215,255,1);
+	border-bottom: 2px solid rgba(0,215,255,1);
+	border-right: 2px solid rgba(0,215,255,1);
 }
 .app-chart_table td {
 	border-top: 0;
@@ -144,10 +144,10 @@ input[type=number]::-webkit-outer-spin-button {
 }
 .app-chart_table th.large { width: 100px; }
 .app-chart_table thead tr th:first-child {
-	border-left: 3px solid rgba(0,215,255,1);
+	border-left: 2px solid rgba(0,215,255,1);
 	border-radius: 2px 0 0 0; 
 }
-.app-chart_table td:first-child { border-left: 3px solid rgba(0,215,255,1); }
+.app-chart_table td:first-child { border-left: 2px solid rgba(0,215,255,1); }
 .app-chart_table thead tr th:last-child {
 	border-radius: 0 2px 0 0;
 }
@@ -160,7 +160,7 @@ td.null { background: repeating-linear-gradient(
   rgba(101,101,121,0.5),
   rgba(101,101,121,0.5) 2px,
   rgba(15,14,18,1) 2px,
-  rgba(15,14,18,1) 6px
+  rgba(15,14,18,1) 10px
 ); }
 td.error { background-color: rgba(255,58,93,1); }
 .app-chart_chapNum {
