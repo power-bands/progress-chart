@@ -134,6 +134,7 @@ input[type=number]::-webkit-outer-spin-button {
 	text-align: center;
 	vertical-align: middle;
 	font-size: 22px;
+	line-height: 30px;
 	border-top: 2px solid rgba(0,215,255,1);
 	border-bottom: 2px solid rgba(0,215,255,1);
 	border-right: 2px solid rgba(0,215,255,1);
@@ -234,7 +235,7 @@ td.error { background-color: rgba(255,58,93,1); }
 	height: 24px;
 	float: right;
 	margin-right: -45px;
-	font-size: 36px;
+	font-size: 33px;
 	line-height: 22px;
 	border-radius: 100%;
 	border: 2px solid rgba(255,58,93,0.5);
@@ -261,7 +262,7 @@ td.error { background-color: rgba(255,58,93,1); }
 	font-family: Abel;
 	font-size: 18px;
 	font-weight: 800;
-	line-height: 29px;
+	line-height: 31px;
 	letter-spacing: 1px;
 	text-transform: uppercase;
 	border: 2px solid rgba(177,185,195,1);
