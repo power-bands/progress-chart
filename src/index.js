@@ -52,7 +52,16 @@ class BookProgressChartGenerator extends React.Component {
   }
   handleChapterPages(e) { this.setState(); }
   handleGenerateProjected(e) { this.setState(); }
-  handleAddRow(e) { this.setState(); }
+  handleAddRow(e) { this.setState(
+    this.state.rows['ch_'+uuid()] = {
+      pages: 0,
+      d: new Date(),
+      month: new Date().getMonth() + 1,
+      date: new Date().getDate(),
+      day: dotw[new Date().getDay()],
+      isFirst: false
+    });
+  }
 
   componentDidUpdate() {
     console.log(this.state);
@@ -159,7 +168,7 @@ class Toolbar extends React.Component {
     return (
       <div>
 			  <a className="app-chart-button generate" id="chartGenerate" href="#0">Generate</a>
-			  <a className="app-chart-button add" id="chartAdd" href="#0">Add Row</a>
+			  <a className="app-chart-button add" id="chartAdd" onClick={this.props.handleAddRow}>Add Row</a>
 			  <p className="app-chart-error"></p>
       </div>
     );
