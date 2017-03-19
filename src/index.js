@@ -10,16 +10,17 @@ function zeroPadInteger(val) {
   return ("0"+val).substr(-2);
 }
 
-function calculateEndDate(pgs, ppd, end) {
-  var duration = Math.ceil(pgs/ppd);
-  end.setDate(end.getDate() + duration);
-  return {
-    d: end,
-    month: end.getMonth() + 1,
-    date: end.getDate(),
-    day: dotw[end.getDay()]
-  };
-}
+// function calculateEndDate(pgs, ppd, end) {
+//   var duration = Math.ceil(pgs/ppd);
+//   end.setDate(end.getDate() + duration);
+//   return {
+//     d: end,
+//     month: end.getMonth() + 1,
+//     date: end.getDate(),
+//     day: dotw[end.getDay()],
+//     isFirst: false
+//   };
+// }
 
 class BookProgressChartGenerator extends React.Component {
   constructor(props) {
@@ -31,7 +32,17 @@ class BookProgressChartGenerator extends React.Component {
     this.handleGenerateProjected = this.handleGenerateProjected.bind(this);
     this.handleAddRow = this.handleAddRow.bind(this);
 
-    this.state = {ppd: 0, chapters: []};
+    let initRows = {};
+    initRows['ch_'+uuid()] = {
+      pages: 0,
+      d: new Date(),
+      month: new Date().getMonth() + 1,
+      date: new Date().getDate(),
+      day: dotw[new Date().getDay()],
+      isFirst: true
+    };
+
+    this.state = {ppd: 0, rows: initRows};
   }
 
   handlePPD(e) { 
@@ -54,7 +65,7 @@ class BookProgressChartGenerator extends React.Component {
         ppd={this.state.ppd} 
         handlePPD={this.handlePPD} />
       <ProgressChart 
-        chapterPages={this.props.data[1]}
+        rows={this.state.rows}
         ppd={this.state.ppd}
         handleChapterPages={this.handleChapterPages}
         handleGenerateProjected={this.handleGenerateProjected}
@@ -81,23 +92,22 @@ class PagesPerDayField extends React.Component {
 			</section>
     );
   }
-}
+} 
 
 class ProgressChart extends React.Component {
   render() {
 
     let chartRows = [],
-        rollingDate = new Date(); 
+        rowsKeys = Object.keys(this.props.rows),
+        rowsKeysLength = rowsKeys.length;
 
-    for (let i = 0; i < this.props.chapterPages.length; i++) {
-
-      let lastDate = calculateEndDate(this.props.chapterPages[i],this.props.ppd,rollingDate),
-          projectedDate = lastDate.month + '/' + lastDate.date;
-
-      chartRows.push(<ChapterRow isFirst={i === 0} key={'ch_'+uuid()} pages={this.props.chapterPages[i]} projected={projectedDate} />);
-      rollingDate = lastDate.d;
-
-    } 
+      for (let i = 0; i < rowsKeysLength; i++) {
+        chartRows.push(
+          <ChapterRow isFirst={this.props.rows[rowsKeys[i]].isFirst} 
+                      key={rowsKeys[i]} 
+                      pages={this.props.rows[rowsKeys[i]].pages} />
+        );
+      }
 
     return (
 			<section className="app-chart_wrapper cf">
@@ -116,7 +126,8 @@ class ProgressChart extends React.Component {
 					</thead>
 					<tbody id="chartRows">{chartRows}</tbody>
         </table>
-        <Toolbar />
+        <Toolbar handleGenerateProjected={this.props.handleGenerateProjected} 
+                 handleAddRow={this.props.handleAddRow} />
       </section>    
     );
   }
@@ -132,7 +143,7 @@ class ChapterRow extends React.Component {
 				<td className=""><input className="app_chart_field pagesInChapter" defaultValue={pageCount} type="number" max="999" min="1" /></td>
 				<td className="null"></td>
 				<td className="null"></td>
-				<td className="app-chart-projected">{this.props.projected}</td>
+				<td className={"app-chart-projected " + ((this.props.projected) ? '' : 'null')}>{this.props.projected}</td>
 				<td className="null"></td>
 				<td className="null large"></td>
 				<td className="null large">
