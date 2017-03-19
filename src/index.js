@@ -5,9 +5,9 @@ import uuid from 'uuid';
 const DATA = [ 5, [15,12,18] ];
 const dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-function zeroPadSmallerThanTen(val) {
-  if (val < 10) { return ('0'+val); }
-  return val;
+function zeroPadInteger(val) {
+  if (parseInt(val,10) > 99) { return ("0"+val).substr(-3); }
+  return ("0"+val).substr(-2);
 }
 
 function calculateEndDate(pgs, ppd, end) {
@@ -21,24 +21,61 @@ function calculateEndDate(pgs, ppd, end) {
   };
 }
 
-
 class BookProgressChartGenerator extends React.Component {
- render() {
+  constructor(props) {
+    super(props);
+    
+    // Bind Handlers (allow to be passed as props)
+    this.handlePPD = this.handlePPD.bind(this);
+    this.handleChapterPages = this.handleChapterPages.bind(this);
+    this.handleGenerateProjected = this.handleGenerateProjected.bind(this);
+    this.handleAddRow = this.handleAddRow.bind(this);
+
+    this.state = {ppd: 0, chapters: []};
+  }
+
+  handlePPD(e) { 
+    let ppdAsInt = (parseInt(e.target.value,10) > 99) ? 99 : parseInt(e.target.value,10);
+    if (ppdAsInt > 99) return;
+    this.setState( {ppd: ppdAsInt} );
+  }
+  handleChapterPages(e) { this.setState(); }
+  handleGenerateProjected(e) { this.setState(); }
+  handleAddRow(e) { this.setState(); }
+
+  componentDidUpdate() {
+    console.log(this.state);
+  }
+
+  render() {
    return (
     <div>
-      <PagesPerDayField ppd={this.props.data[0]} />
-      <ProgressChart chapterPages={this.props.data[1]} ppd={this.props.data[0]} />
+      <PagesPerDayField 
+        ppd={this.state.ppd} 
+        handlePPD={this.handlePPD} />
+      <ProgressChart 
+        chapterPages={this.props.data[1]}
+        ppd={this.state.ppd}
+        handleChapterPages={this.handleChapterPages}
+        handleGenerateProjected={this.handleGenerateProjected}
+        handleAddRow={this.handleAddRow} />
     </div>
    );
- }
+  }
 }
 
 class PagesPerDayField extends React.Component {
   render() {
-    let ppdVal = zeroPadSmallerThanTen(this.props.ppd);
     return (
 			<section className="app-ppd_wrapper">
-				<input className="app-ppd_input" defaultValue={ppdVal} name="ppd" type="number" step="1" min="1" />
+				<input className="app-ppd_input"
+               value={zeroPadInteger( this.props.ppd )}
+               name="ppd"
+               type="number"
+               step="1"
+               min="1"
+               max="99"
+               onChange={this.props.handlePPD} />
 				<label className="app-ppd_label" htmlFor="ppd" title="Pages per Day">P/D</label> 
 				<p className="app-ppd_helper">Enter number of pages read per day</p>
 			</section>
@@ -60,9 +97,7 @@ class ProgressChart extends React.Component {
       chartRows.push(<ChapterRow isFirst={i === 0} key={'ch_'+uuid()} pages={this.props.chapterPages[i]} projected={projectedDate} />);
       rollingDate = lastDate.d;
 
-    }
-
-    console.log(chartRows);
+    } 
 
     return (
 			<section className="app-chart_wrapper cf">
@@ -89,8 +124,8 @@ class ProgressChart extends React.Component {
 
 class ChapterRow extends React.Component {
   render() {
-    let pageCount = zeroPadSmallerThanTen(this.props.pages),
-        rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" href="javascript:void(0);" tabIndex="-1">-</a>;
+    let pageCount = zeroPadInteger(this.props.pages),
+        rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" href="#0" tabIndex="-1">-</a>;
     return (
 		  <tr>
 				<td><span className="app-chart_chapNum"></span></td>
@@ -112,8 +147,8 @@ class Toolbar extends React.Component {
   render() {
     return (
       <div>
-			  <a className="app-chart-button generate" id="chartGenerate" href="javascript:void(0);">Generate</a>
-			  <a className="app-chart-button add" id="chartAdd" href="javascript:void(0);">Add Row</a>
+			  <a className="app-chart-button generate" id="chartGenerate" href="#0">Generate</a>
+			  <a className="app-chart-button add" id="chartAdd" href="#0">Add Row</a>
 			  <p className="app-chart-error"></p>
       </div>
     );
