@@ -6,8 +6,8 @@ import { Map } from 'immutable';
 const DATA = [ 5, [15,12,18] ];
 const dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-function zeroPadInteger(val) {
-  if (parseInt(val,10) > 99) { return ("0"+val).substr(-3); }
+function zeroPadInteger(val, threeFlag) {
+  if (threeFlag || parseInt(val,10) > 99) { return ("00"+val).substr(-3); }
   return ("0"+val).substr(-2);
 }
 
@@ -48,16 +48,27 @@ class BookProgressChartGenerator extends React.Component {
   }
 
   handlePPD(e) { 
-    let ppdAsInt = (parseInt(e.target.value,10) > 99) ? 99 : parseInt(e.target.value,10);
-    if (ppdAsInt > 99) return;
-    this.setState( {ppd: ppdAsInt} );
+    let ppd = Math.min(parseInt(e.target.value,10),99);
+
+    // produce error in UI
+    if (ppd < 0 || ppd > 99) return;
+
+    this.setState( {ppd} );
   }
-  handleChapterPages(e) { this.setState(); }
+  handleChapterPages(e,uuid) {
+    let pages = Math.min(parseInt(e.target.value,10),999),
+        rows = { ...this.state.rows };
+
+    // produce error in UI
+    if (pages < 0 || pages > 999) return;
+
+    rows[uuid].pages = pages;
+
+    this.setState( {rows} );
+  }
   handleGenerateProjected(e) { this.setState(); }
   handleAddRow(e) {
-  
     let rows = { ...this.state.rows };
-    // Object.assign({}, this.state.rows);
 
     rows['ch_'+uuid()] = {
       pages: 0,
@@ -69,16 +80,13 @@ class BookProgressChartGenerator extends React.Component {
     };
 
     this.setState( {rows} );
-
   }
   handleRemoveRow(e,uuid) {
-
     let rows = { ...this.state.rows };
 
     delete rows[uuid];
 
     this.setState( {rows} );
-
   }
 
   componentDidUpdate() {
@@ -108,7 +116,7 @@ class PagesPerDayField extends React.Component {
     return (
 			<section className="app-ppd_wrapper">
 				<input className="app-ppd_input"
-               value={zeroPadInteger( this.props.ppd )}
+               value={zeroPadInteger(this.props.ppd,false)}
                name="ppd"
                type="number"
                step="1"
@@ -135,6 +143,7 @@ class ProgressChart extends React.Component {
                       key={rowsKeys[i]} 
                       chapterUUID={rowsKeys[i]} 
                       pages={this.props.rows[rowsKeys[i]].pages}
+                      handleChapterPages={this.props.handleChapterPages}
                       handleRemoveRow={this.props.handleRemoveRow} />
         );
       }
@@ -165,15 +174,22 @@ class ProgressChart extends React.Component {
 
 class ChapterRow extends React.Component {
   render() {
-    let pageCount = zeroPadInteger(this.props.pages),
+    let projectedModifier = (this.props.projected) ? 'app-chart-projected' : 'app-chart-projected null',
         rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" onClick={(e) => this.props.handleRemoveRow(e,this.props.chapterUUID)} tabIndex="-1">-</a>;
     return (
 		  <tr>
 				<td><span className="app-chart_chapNum"></span></td>
-				<td className=""><input className="app_chart_field pagesInChapter" defaultValue={pageCount} type="number" max="999" min="1" /></td>
+				<td className="">
+          <input className="app_chart_field pagesInChapter"
+                 value={zeroPadInteger(this.props.pages,true)}
+                 onChange={(e) => this.props.handleChapterPages(e,this.props.chapterUUID)}
+                 type="number"
+                 max="999"
+                 min="1" />
+          </td>
 				<td className="null"></td>
 				<td className="null"></td>
-				<td className={"app-chart-projected " + ((this.props.projected) ? '' : 'null')}>{this.props.projected}</td>
+				<td className={projectedModifier}>{this.props.projected}</td>
 				<td className="null"></td>
 				<td className="null large"></td>
 				<td className="null large">
