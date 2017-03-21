@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import uuid from 'uuid';
+import { Map } from 'immutable';
 
 const DATA = [ 5, [15,12,18] ];
 const dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
@@ -31,6 +32,7 @@ class BookProgressChartGenerator extends React.Component {
     this.handleChapterPages = this.handleChapterPages.bind(this);
     this.handleGenerateProjected = this.handleGenerateProjected.bind(this);
     this.handleAddRow = this.handleAddRow.bind(this);
+    this.handleRemoveRow = this.handleRemoveRow.bind(this);
 
     let initRows = {};
     initRows['ch_'+uuid()] = {
@@ -52,15 +54,31 @@ class BookProgressChartGenerator extends React.Component {
   }
   handleChapterPages(e) { this.setState(); }
   handleGenerateProjected(e) { this.setState(); }
-  handleAddRow(e) { this.setState(
-    this.state.rows['ch_'+uuid()] = {
+  handleAddRow(e) {
+  
+    let rows = { ...this.state.rows };
+    // Object.assign({}, this.state.rows);
+
+    rows['ch_'+uuid()] = {
       pages: 0,
       d: new Date(),
       month: new Date().getMonth() + 1,
       date: new Date().getDate(),
       day: dotw[new Date().getDay()],
       isFirst: false
-    });
+    };
+
+    this.setState( {rows} );
+
+  }
+  handleRemoveRow(e,uuid) {
+
+    let rows = { ...this.state.rows };
+
+    delete rows[uuid];
+
+    this.setState( {rows} );
+
   }
 
   componentDidUpdate() {
@@ -78,6 +96,7 @@ class BookProgressChartGenerator extends React.Component {
         ppd={this.state.ppd}
         handleChapterPages={this.handleChapterPages}
         handleGenerateProjected={this.handleGenerateProjected}
+        handleRemoveRow={this.handleRemoveRow}
         handleAddRow={this.handleAddRow} />
     </div>
    );
@@ -114,7 +133,9 @@ class ProgressChart extends React.Component {
         chartRows.push(
           <ChapterRow isFirst={this.props.rows[rowsKeys[i]].isFirst} 
                       key={rowsKeys[i]} 
-                      pages={this.props.rows[rowsKeys[i]].pages} />
+                      chapterUUID={rowsKeys[i]} 
+                      pages={this.props.rows[rowsKeys[i]].pages}
+                      handleRemoveRow={this.props.handleRemoveRow} />
         );
       }
 
@@ -145,7 +166,7 @@ class ProgressChart extends React.Component {
 class ChapterRow extends React.Component {
   render() {
     let pageCount = zeroPadInteger(this.props.pages),
-        rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" href="#0" tabIndex="-1">-</a>;
+        rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" onClick={(e) => this.props.handleRemoveRow(e,this.props.chapterUUID)} tabIndex="-1">-</a>;
     return (
 		  <tr>
 				<td><span className="app-chart_chapNum"></span></td>
@@ -167,8 +188,11 @@ class Toolbar extends React.Component {
   render() {
     return (
       <div>
-			  <a className="app-chart-button generate" id="chartGenerate" href="#0">Generate</a>
-			  <a className="app-chart-button add" id="chartAdd" onClick={this.props.handleAddRow}>Add Row</a>
+			  <a className="app-chart-button generate"
+           id="chartGenerate">Generate</a>
+			  <a className="app-chart-button add"
+           id="chartAdd"
+           onClick={this.props.handleAddRow}>Add Row</a>
 			  <p className="app-chart-error"></p>
       </div>
     );
