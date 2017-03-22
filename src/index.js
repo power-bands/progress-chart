@@ -1,27 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import uuid from 'uuid';
-import { Map } from 'immutable';
 
-const DATA = [ 5, [15,12,18] ];
 const dotw = ['Su','Mo','Tu','We','Th','Fr','Sa'];
 
-function zeroPadInteger(val, threeFlag) {
-  if (threeFlag || parseInt(val,10) > 99) { return ("00"+val).substr(-3); }
+function zeroPadInteger(val, hasThreeDigits) {
+  if (hasThreeDigits || parseInt(val,10) > 99) { return ("00"+val).substr(-3); }
   return ("0"+val).substr(-2);
 }
-
-// function calculateEndDate(pgs, ppd, end) {
-//   var duration = Math.ceil(pgs/ppd);
-//   end.setDate(end.getDate() + duration);
-//   return {
-//     d: end,
-//     month: end.getMonth() + 1,
-//     date: end.getDate(),
-//     day: dotw[end.getDay()],
-//     isFirst: false
-//   };
-// }
 
 class BookProgressChartGenerator extends React.Component {
   constructor(props) {
@@ -33,6 +19,7 @@ class BookProgressChartGenerator extends React.Component {
     this.handleGenerateProjected = this.handleGenerateProjected.bind(this);
     this.handleAddRow = this.handleAddRow.bind(this);
     this.handleRemoveRow = this.handleRemoveRow.bind(this);
+    this.setProjectedRows = this.setProjectedRows.bind(this);
 
     let initRows = {};
     initRows['ch_'+uuid()] = {
@@ -66,7 +53,6 @@ class BookProgressChartGenerator extends React.Component {
 
     this.setState( {rows} );
   }
-  handleGenerateProjected(e) { this.setState(); }
   handleAddRow(e) {
     let rows = { ...this.state.rows };
 
@@ -85,6 +71,39 @@ class BookProgressChartGenerator extends React.Component {
     let rows = { ...this.state.rows };
 
     delete rows[uuid];
+
+    this.setState( {rows} );
+  }
+
+  setProjectedRows(row,d) {
+    let pgs = row.pages,
+        end = d,
+        ppd = this.state.ppd,
+        duration = Math.ceil(pgs/ppd);
+
+    end.setDate(end.getDate() + duration);
+
+    return {
+      pages: row.pages,
+      d: end,
+      month: end.getMonth() + 1,
+      date: end.getDate(),
+      day: dotw[end.getDay()],
+      projected: (end.getMonth() + 1) + '/' + (end.getDate()),
+      isFirst: row.isFirst
+    };
+  }
+  
+  handleGenerateProjected(e) {
+    let rows = { ...this.state.rows },
+        rowKeys = Object.keys(rows),
+        rowKeysLength = rowKeys.length,
+        rollingDate = new Date();
+
+    for (let i = 0; i < rowKeysLength; i++) {
+      rows[rowKeys[i]] = this.setProjectedRows(rows[rowKeys[i]],rollingDate);
+      rollingDate = rows[rowKeys[i]].d;
+    }
 
     this.setState( {rows} );
   }
@@ -134,15 +153,16 @@ class ProgressChart extends React.Component {
   render() {
 
     let chartRows = [],
-        rowsKeys = Object.keys(this.props.rows),
-        rowsKeysLength = rowsKeys.length;
+        rowKeys = Object.keys(this.props.rows),
+        rowKeysLength = rowKeys.length;
 
-      for (let i = 0; i < rowsKeysLength; i++) {
+      for (let i = 0; i < rowKeysLength; i++) {
         chartRows.push(
-          <ChapterRow isFirst={this.props.rows[rowsKeys[i]].isFirst} 
-                      key={rowsKeys[i]} 
-                      chapterUUID={rowsKeys[i]} 
-                      pages={this.props.rows[rowsKeys[i]].pages}
+          <ChapterRow isFirst={this.props.rows[rowKeys[i]].isFirst} 
+                      key={rowKeys[i]} 
+                      chapterUUID={rowKeys[i]} 
+                      pages={this.props.rows[rowKeys[i]].pages}
+                      projected={this.props.rows[rowKeys[i]].projected}
                       handleChapterPages={this.props.handleChapterPages}
                       handleRemoveRow={this.props.handleRemoveRow} />
         );
@@ -205,7 +225,8 @@ class Toolbar extends React.Component {
     return (
       <div>
 			  <a className="app-chart-button generate"
-           id="chartGenerate">Generate</a>
+           id="chartGenerate"
+           onClick={this.props.handleGenerateProjected}>Generate</a>
 			  <a className="app-chart-button add"
            id="chartAdd"
            onClick={this.props.handleAddRow}>Add Row</a>
@@ -216,6 +237,6 @@ class Toolbar extends React.Component {
 }
 
 ReactDOM.render(
-  <BookProgressChartGenerator data={DATA} />,
+  <BookProgressChartGenerator  />,
   document.getElementById('root')
 );

@@ -127,7 +127,7 @@ input[type=number]::-webkit-outer-spin-button {
 .app-chart_table th,
 .app-chart_table td {
 	padding: 4px;
-	width: 50px; 
+	width: 55px; 
 	height: 30px;
 	background-color: transparent;
 	color: #fff;
@@ -181,7 +181,7 @@ td.error { background-color: rgba(255,58,93,1); }
 
 .app_chart_field {
 	display: inline-block;
-	width: 36px;
+	width: 40px;
 	background-color: transparent;
 	border: none;
 	line-height: 0;
@@ -247,7 +247,9 @@ td.error { background-color: rgba(255,58,93,1); }
 							color 100ms ease-out;
 	text-decoration: none;
 }
+.app-chart-remove:focus,
 .app-chart-remove:hover {
+	outline: none;
 	border-color: rgba(255,58,93,1);
 	color: rgba(255,58,93,1);
 }
