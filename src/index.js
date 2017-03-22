@@ -31,26 +31,28 @@ class BookProgressChartGenerator extends React.Component {
       isFirst: true
     };
 
-    this.state = {ppd: 0, rows: initRows};
+    this.state = {
+      ppd: {
+        val: 0,
+        hasError: false
+      },
+      rows: initRows,
+      errorMessage: ''
+    };
   }
 
   handlePPD(e) { 
-    let ppd = Math.min(parseInt(e.target.value,10),99);
+    let ppd = { ...this.state.ppd },
+        val = (e.target.value) ? Math.min(parseInt(e.target.value,10),99) : 0;
 
-    // produce error in UI
-    if (ppd < 0 || ppd > 99) return;
-
+    ppd.val = val;
     this.setState( {ppd} );
   }
   handleChapterPages(e,uuid) {
-    let pages = Math.min(parseInt(e.target.value,10),999),
+    let pages = (e.target.value) ? Math.min(parseInt(e.target.value,10),999) : 0,
         rows = { ...this.state.rows };
 
-    // produce error in UI
-    if (pages < 0 || pages > 999) return;
-
     rows[uuid].pages = pages;
-
     this.setState( {rows} );
   }
   handleAddRow(e) {
@@ -62,6 +64,7 @@ class BookProgressChartGenerator extends React.Component {
       month: new Date().getMonth() + 1,
       date: new Date().getDate(),
       day: dotw[new Date().getDay()],
+      hasError: false,
       isFirst: false
     };
 
@@ -78,9 +81,10 @@ class BookProgressChartGenerator extends React.Component {
   setProjectedRows(row,d) {
     let pgs = row.pages,
         end = d,
-        ppd = this.state.ppd,
+        ppd = this.state.ppd.val,
         duration = Math.ceil(pgs/ppd);
 
+    console.log(pgs,end,ppd);
     end.setDate(end.getDate() + duration);
 
     return {
@@ -90,21 +94,46 @@ class BookProgressChartGenerator extends React.Component {
       date: end.getDate(),
       day: dotw[end.getDay()],
       projected: (end.getMonth() + 1) + '/' + (end.getDate()),
+      hasError: false,
       isFirst: row.isFirst
     };
   }
-  
+
   handleGenerateProjected(e) {
     let rows = { ...this.state.rows },
         rowKeys = Object.keys(rows),
         rowKeysLength = rowKeys.length,
-        rollingDate = new Date();
+        rollingDate = new Date(),
+        ppd = { ...this.state.ppd };
+
+    this.setErrorMessage('');
 
     for (let i = 0; i < rowKeysLength; i++) {
+      
+      if (this.state.ppd.val === 0) {
+        ppd.hasError = true;
+        this.setState( {ppd} );
+        this.setErrorMessage('Missing Pages Per Day');
+        return;
+      }
+      
+      if (rows[rowKeys[i]].pages === 0) {
+        rows[rowKeys[i]].hasError = true;
+        rows[rowKeys[i]].projected = '';
+        this.setErrorMessage('Missing Chapter Pages');
+        continue;
+      }
+      
       rows[rowKeys[i]] = this.setProjectedRows(rows[rowKeys[i]],rollingDate);
       rollingDate = rows[rowKeys[i]].d;
+
     }
 
+    if (ppd.hasError) {
+      ppd.hasError = false;
+      this.setState( {ppd} );
+    }
+    
     this.setState( {rows} );
   }
 
@@ -112,11 +141,16 @@ class BookProgressChartGenerator extends React.Component {
     console.log(this.state);
   }
 
+  setErrorMessage(msg) {
+    this.setState ({errorMessage: msg});
+  }
+
   render() {
    return (
     <div>
       <PagesPerDayField 
-        ppd={this.state.ppd} 
+        ppd={this.state.ppd.val} 
+        hasError={this.state.ppd.hasError}
         handlePPD={this.handlePPD} />
       <ProgressChart 
         rows={this.state.rows}
@@ -124,7 +158,8 @@ class BookProgressChartGenerator extends React.Component {
         handleChapterPages={this.handleChapterPages}
         handleGenerateProjected={this.handleGenerateProjected}
         handleRemoveRow={this.handleRemoveRow}
-        handleAddRow={this.handleAddRow} />
+        handleAddRow={this.handleAddRow}
+        errorMessage={this.state.errorMessage} />
     </div>
    );
   }
@@ -132,9 +167,12 @@ class BookProgressChartGenerator extends React.Component {
 
 class PagesPerDayField extends React.Component {
   render() {
+
+    let inputModifier = (this.props.hasError) ? "app-ppd_input error" : "app-ppd_input";
+
     return (
 			<section className="app-ppd_wrapper">
-				<input className="app-ppd_input"
+				<input className={inputModifier}
                value={zeroPadInteger(this.props.ppd,false)}
                name="ppd"
                type="number"
@@ -161,6 +199,7 @@ class ProgressChart extends React.Component {
           <ChapterRow isFirst={this.props.rows[rowKeys[i]].isFirst} 
                       key={rowKeys[i]} 
                       chapterUUID={rowKeys[i]} 
+                      hasError={this.props.rows[rowKeys[i]].hasError}
                       pages={this.props.rows[rowKeys[i]].pages}
                       projected={this.props.rows[rowKeys[i]].projected}
                       handleChapterPages={this.props.handleChapterPages}
@@ -186,7 +225,8 @@ class ProgressChart extends React.Component {
 					<tbody id="chartRows">{chartRows}</tbody>
         </table>
         <Toolbar handleGenerateProjected={this.props.handleGenerateProjected} 
-                 handleAddRow={this.props.handleAddRow} />
+                 handleAddRow={this.props.handleAddRow}
+                 errorMessage={this.props.errorMessage}/>
       </section>    
     );
   }
@@ -195,12 +235,13 @@ class ProgressChart extends React.Component {
 class ChapterRow extends React.Component {
   render() {
     let projectedModifier = (this.props.projected) ? 'app-chart-projected' : 'app-chart-projected null',
-        rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" onClick={(e) => this.props.handleRemoveRow(e,this.props.chapterUUID)} tabIndex="-1">-</a>;
+        rowRemove = (this.props.isFirst) ? null : <a className="app-chart-remove" onClick={(e) => this.props.handleRemoveRow(e,this.props.chapterUUID)} tabIndex="-1">-</a>,
+        inputModifier = (this.props.hasError) ? "app_chart_field pagesInChapter error" : "app_chart_field pagesInChapter";
     return (
 		  <tr>
 				<td><span className="app-chart_chapNum"></span></td>
 				<td className="">
-          <input className="app_chart_field pagesInChapter"
+          <input className={inputModifier}
                  value={zeroPadInteger(this.props.pages,true)}
                  onChange={(e) => this.props.handleChapterPages(e,this.props.chapterUUID)}
                  type="number"
@@ -222,6 +263,9 @@ class ChapterRow extends React.Component {
 
 class Toolbar extends React.Component {
   render() {
+
+    let errorMessageModifier = (this.props.errorMessage) ? 'app-chart-error visible' : 'app-chart-error';
+
     return (
       <div>
 			  <a className="app-chart-button generate"
@@ -230,7 +274,7 @@ class Toolbar extends React.Component {
 			  <a className="app-chart-button add"
            id="chartAdd"
            onClick={this.props.handleAddRow}>Add Row</a>
-			  <p className="app-chart-error"></p>
+			  <p className={errorMessageModifier}>{this.props.errorMessage}</p>
       </div>
     );
   }
