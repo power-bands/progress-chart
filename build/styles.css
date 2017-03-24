@@ -7,12 +7,12 @@
 
 .cf:before,
 .cf:after {
-    content: " "; /* 1 */
-    display: table; /* 2 */
+		content: " "; /* 1 */
+		display: table; /* 2 */
 }
 
 .cf:after {
-    clear: both;
+		clear: both;
 }
 
 /**
@@ -20,7 +20,7 @@
  * Include this rule to trigger hasLayout and contain floats.
  */
 .cf {
-    *zoom: 1;
+		*zoom: 1;
 }
 
 html { box-sizing: border-box; }
@@ -64,6 +64,11 @@ body {
 	text-transform: uppercase;
 }
 
+.app {
+	width: 600px;
+	margin: 0 0 80px 0;
+}
+
 /* Pages Per Day */
 
 .app-ppd_wrapper {
@@ -90,8 +95,8 @@ body {
 input[type=number] { -moz-appearance: textfield; } 
 input[type=number]::-webkit-inner-spin-button, 
 input[type=number]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
+	-webkit-appearance: none; 
+	margin: 0; 
 }
 .app-ppd_label {
 	display: inline-block;
@@ -124,6 +129,7 @@ input[type=number]::-webkit-outer-spin-button {
 	border-spacing: 0;
 	margin-bottom: 15px;
 }
+.app-chart_table.subdued { margin: 7px 0 3px; }
 .app-chart_table th,
 .app-chart_table td {
 	padding: 4px;
@@ -138,6 +144,22 @@ input[type=number]::-webkit-outer-spin-button {
 	border-top: 2px solid rgba(0,215,255,1);
 	border-bottom: 2px solid rgba(0,215,255,1);
 	border-right: 2px solid rgba(0,215,255,1);
+}
+.app-chart_table.subdued th {
+	border-top: 2px solid rgba(0,215,255,0.25);
+	border-bottom: 2px solid rgba(0,215,255,0.25);
+	border-right: 2px solid rgba(0,215,255,0.25);
+	color: rgba(177,185,195,0.25);
+}
+.app-chart_table.subdued th.highlighted {
+	border-top: 2px solid rgba(0,215,255,1);
+	border-bottom: 2px solid rgba(0,215,255,1);
+	border-right: 2px solid rgba(0,215,255,1);
+	border-left: 2px solid rgba(0,215,255,1);
+	color: rgba(177,185,195,1);
+}
+.app-chart_table.subdued th:first-child {
+	border-left: 2px solid rgba(0,215,255,0.25);
 }
 .app-chart_table td {
 	border-top: 0;
@@ -157,11 +179,11 @@ input[type=number]::-webkit-outer-spin-button {
 	border-radius: 0 0 2px 0;
 }
 td.null { background: repeating-linear-gradient(
-  45deg,
-  rgba(101,101,121,0.5),
-  rgba(101,101,121,0.5) 2px,
-  rgba(15,14,18,1) 2px,
-  rgba(15,14,18,1) 10px
+	45deg,
+	rgba(101,101,121,0.5),
+	rgba(101,101,121,0.5) 2px,
+	rgba(15,14,18,1) 2px,
+	rgba(15,14,18,1) 10px
 ); }
 td.error { background-color: rgba(255,58,93,1); }
 .app-chart_chapNum {
@@ -301,4 +323,46 @@ td.error { background-color: rgba(255,58,93,1); }
 .app-chart-button.generate:hover {
 	background-color: rgba(0,215,255,1);
 	color: rgba(15,14,18,1);
+}
+
+/* Progress Chart - How To */
+
+.app-howto {
+	width: 600px;
+	color: rgba(177,185,195,1);
+	padding-top: 20px;
+	border-top: 1px solid rgba(101,101,121,1);
+}
+.app-howto h2 {
+	color: rgba(238,213,18,1);
+	font-size: 32px;
+	margin: 20px 0 14px 0;
+}
+.app-howto h2:first-child { margin-top: 0; }
+.app-howto p {
+	font-size: 26px;
+	line-height: 1.4;
+	margin: 0;
+}
+.app-howto p + p {
+	margin-top: 14px;
+}
+.app-howto ul {
+	padding: 0;
+	margin: 20px 0 70px 0;
+}
+.app-howto_listItem {
+	display: list-item;
+  margin-bottom: 22px;
+  list-style-type: disc;
+  font-size: 18px;
+  color: rgba(238,213,18,1);
+}
+.app-howto_listItem-title {
+	font-size: 24px;
+	color: rgba(238,213,18,1);
+	margin-bottom: 5px;
+}
+.app-howto_listItem p:not(.app-howto_listItem-title) {
+	color: rgba(177,185,195,1);
 }
