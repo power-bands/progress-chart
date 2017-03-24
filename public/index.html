@@ -1,19 +1,118 @@
 <!doctype html>
 <html lang="en">
-  <head>
+	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Book Progress Chart Generator</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Book Progress Chart Generator</title>
 		<link href="https://fonts.googleapis.com/css?family=Abel" rel="stylesheet">
 		<link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
+		<link rel="stylesheet" href="styles.css">
+	</head>
+	<body class="cf">
 		<header>
 			<h1 class="app-headline">Book Progress Chart<br><span class="app-smallcaps">generator</span></h1>
-			<p class="app-subhead"><span class="app-label yellow">0.2.1</span> by <span class="app-attribution">OFFBEAT</span></p>
+			<p class="app-subhead"><span class="app-label yellow">0.3.0</span> by <span class="app-attribution">OFFBEAT</span></p>
 		</header>
-    <div id="root"></div>
-  </body>
+		<div class="app" id="root"></div>
+		<aside class="app-howto">
+			<h2>How to Use This Tool</h2>
+			<p>This tool produces a schedule of completion dates for each chapter in a book. You provide the number of chapters, pages in each chapter, and how many pages per day (PPD) you'll read.
+			Currently, if the number of pages in a chapter is not evenly divisble by the PPD, the scheduled completion date is rounded up to the next full day. Completion dates are scheduled inclusively beginning at the current date.</p>
+			<h2>Bullet Journal Users</h2>
+			<p>The resulting chart is designed for transcription into your bullet journal. It includes a few extra columns you might find useful for tracking your progress and referencing related collections:</p>
+			<ul>
+				<li class="app-howto_listItem">
+					<p class="app-howto_listItem-title">Start Column</p>
+					<table class="app-chart_table subdued">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>No</th>
+								<th class="highlighted">S</th>
+								<th>F</th>
+								<th>P</th>
+								<th>D</th>
+								<th class="large">T</th>
+								<th class="large">V</th>
+							</tr>
+						</thead>
+					</table>
+					<p>Mark the date you begin reading the target chapter.</p>
+				</li>
+				<li class="app-howto_listItem">
+					<p class="app-howto_listItem-title">Finish Column</p>
+					<table class="app-chart_table subdued">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>No</th>
+								<th>S</th>
+								<th class="highlighted">F</th>
+								<th>P</th>
+								<th>D</th>
+								<th class="large">T</th>
+								<th class="large">V</th>
+							</tr>
+						</thead>
+					</table>
+					<p>Mark the date you finish reading the target chapter.</p>
+				</li>
+				<li class="app-howto_listItem">
+					<p class="app-howto_listItem-title">Duration Column</p>
+					<table class="app-chart_table subdued">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>No</th>
+								<th>S</th>
+								<th>F</th>
+								<th>P</th>
+								<th class="highlighted">D</th>
+								<th class="large">T</th>
+								<th class="large">V</th>
+							</tr>
+						</thead>
+					</table>
+					<p>Mark the number of days you spent reading the target chapter.</p>
+				</li>
+				<li class="app-howto_listItem">
+					<p class="app-howto_listItem-title">Transcription Column</p>
+					<table class="app-chart_table subdued">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>No</th>
+								<th>S</th>
+								<th>F</th>
+								<th>P</th>
+								<th>D</th>
+								<th class="large highlighted">T</th>
+								<th class="large">V</th>
+							</tr>
+						</thead>
+					</table>
+					<p>Mark the page numbers of any transcribed passages you made from the target chapter.</p>
+				</li>
+				<li class="app-howto_listItem">
+					<p class="app-howto_listItem-title">Vocabulary Column</p>
+					<table class="app-chart_table subdued">
+						<thead>
+							<tr>
+								<th>#</th>
+								<th>No</th>
+								<th>S</th>
+								<th>F</th>
+								<th>P</th>
+								<th>D</th>
+								<th class="large">T</th>
+								<th class="large highlighted">V</th>
+							</tr>
+						</thead>
+					</table>
+					<p>Mark the page numbers of any vocabulary collections derived from the target chapter.</p>
+				</li>
+			</ul>
+		</aside>
+	</body>
 </html>
